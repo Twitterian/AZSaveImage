@@ -11,8 +11,6 @@ namespace AZSaveImage
 {
     static class Program
     {
-        const string path = "Usagination_Addon";
-
         [STAThread]
         static void Main(string[] args)
         {
@@ -26,21 +24,16 @@ namespace AZSaveImage
             savefile.Title = "이미지 저장";
             savefile.Filter = "이미지 파일|*.*";
 
-            // 설정 파일을 저장할 경로입니다. 없다면 만들어줘야죠!
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path).Attributes = FileAttributes.Directory | FileAttributes.Hidden;
-                savefile.InitialDirectory = Environment.CurrentDirectory;
-            }
-            else if (!File.Exists(path + "/AzImageSave.dat"))
+            // 설정을 읽어와요
+            if (!File.Exists("AzImageSave.dat"))
             {
                 savefile.InitialDirectory = Environment.CurrentDirectory;
             }
-            else // 설정을 읽어와요
+            else 
             {
                 try
                 {
-                    using (System.IO.Stream ReadStream = new FileStream(path + "/AzImageSave.dat", FileMode.Open))
+                    using (System.IO.Stream ReadStream = new FileStream("AzImageSave.dat", FileMode.Open))
                     {
                         var Reader = new StreamReader(ReadStream);
                         savefile.InitialDirectory = Reader.ReadLine();
@@ -85,7 +78,7 @@ namespace AZSaveImage
                 }
 
                 // 종료하기 전에 잊지말고 설정 저장하기
-                using (System.IO.Stream WriteStream = new FileStream(path + "/AzImageSave.dat", FileMode.Create))
+                using (System.IO.Stream WriteStream = new FileStream("AzImageSave.dat", FileMode.Create))
                 {
                     var Writer = new StreamWriter(WriteStream);
                     Writer.WriteLine(savefile.InitialDirectory);

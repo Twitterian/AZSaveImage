@@ -58,7 +58,7 @@ namespace AZSaveImage
                 while (match.Success)
                 {
                     var url = match.Value.Replace("media_url:", "");
-                    var image = GetImageFromUrl(url); // url로부터 이미지 스트림을 얻어옵니다.
+                    var image = GetImageFromUrl(url+":orig"); // url로부터 이미지 스트림을 얻어옵니다.
                     savefile.FileName = url.Replace("http://pbs.twimg.com/media/", ""); // url에서 끝 부분만 잘라내 파일 이름의 기본값으로 설정합니다.
                     if (list.Contains(savefile.FileName)) // 해당 값이 이미 리스트에 있다면 이 이미지에 대한 저장작업은 한번 이상 수행되었을 것임으로 다음 매치를 찾습니다.
                     {

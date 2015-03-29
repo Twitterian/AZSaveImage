@@ -21,21 +21,22 @@ namespace AZSaveImage
             // 이미지 저장 경로를 지정할 다이얼로그입니다.
             var savefile = new SaveFileDialog();
             savefile.RestoreDirectory = true;
+            savefile.InitialDirectory = Environment.CurrentDirectory;
             savefile.Title = "이미지 저장";
             savefile.Filter = "이미지 파일|*.*";
 
-            // 설정을 읽어와요
-            if (!File.Exists("AzImageSave.dat"))
+            // 빠른 저장시 사용할 저장 위치
+            var saveDirectory = Environment.CurrentDirectory;
+
+            if (args.Length == 0 || (args.Length > 0 && Directory.Exists("Scripts/SaveImage.js.Private")))
             {
-                savefile.InitialDirectory = Environment.CurrentDirectory;
-            }
-            else 
-            {
+                // 설정을 읽어와요
                 try
                 {
-                    using (System.IO.Stream ReadStream = new FileStream("AzImageSave.dat", FileMode.Open))
+                    using (System.IO.Stream ReadStream = new FileStream((args.Length > 0) ? "Scripts/SaveImage.js.Private/AzImageSave.dat" : "AzImageSave.dat", FileMode.Open))
                     {
                         var Reader = new StreamReader(ReadStream);
+                        saveDirectory = Reader.ReadLine();
                         savefile.InitialDirectory = Reader.ReadLine();
                         Reader.Close();
                     }
@@ -43,9 +44,10 @@ namespace AZSaveImage
                 catch
                 {
                     savefile.InitialDirectory = Environment.CurrentDirectory;
+                    saveDirectory = Environment.CurrentDirectory;
                 }
-            }
 
+            }
 
             if (args.Length > 0)
             {
@@ -58,33 +60,70 @@ namespace AZSaveImage
                 while (match.Success)
                 {
                     var url = match.Value.Replace("media_url:", "");
-                    var image = GetImageFromUrl(url+":orig"); // url로부터 이미지 스트림을 얻어옵니다.
-                    savefile.FileName = url.Replace("http://pbs.twimg.com/media/", ""); // url에서 끝 부분만 잘라내 파일 이름의 기본값으로 설정합니다.
+                    var image = GetImageFromUrl(url + ":orig"); // url로부터 이미지 스트림을 얻어옵니다.
+                    var filename = url.Replace("http://pbs.twimg.com/media/", ""); // url에서 끝 부분만 잘라내 파일 이름의 기본값으로 설정합니다.
+                    savefile.FileName = filename;
+
                     if (list.Contains(savefile.FileName)) // 해당 값이 이미 리스트에 있다면 이 이미지에 대한 저장작업은 한번 이상 수행되었을 것임으로 다음 매치를 찾습니다.
                     {
                         match = match.NextMatch();
                         continue;
                     }
                     list.Add(savefile.FileName); // 이미지 파일 이름을 리스트에 추가합니다.
-                    if (savefile.ShowDialog() == DialogResult.OK)
-                    {
-                        image.Save(savefile.FileName); // 이미지 저장
-                    }
 
-                    // 파일 이름으로 전체 경로를 얻어온다 -> 거기서 파일이름을 뺀다 = 현재 디렉터리!
-                    savefile.InitialDirectory = Path.GetDirectoryName(savefile.FileName).Replace(savefile.FileName, ""); 
+                    // 이미지 저장
+                    if (args[1] == "0")
+                    {
+                        try
+                        {
+                            image.Save(saveDirectory + "/" + filename);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("에러가 발생했습니다.");
+                        }
+                    }
+                    else if (args[1] == "1")
+                    {
+                        if (savefile.ShowDialog() == DialogResult.OK)
+                        {
+                            image.Save(savefile.FileName);
+                        }
+
+                        // 파일 이름으로 전체 경로를 얻어온다 -> 거기서 파일이름을 뺀다 = 현재 디렉터리!
+                        savefile.InitialDirectory = Path.GetDirectoryName(savefile.FileName).Replace(savefile.FileName, "");
+                    }
 
                     match = match.NextMatch();
                 }
+            }
+            else
+            {
+                using (FolderBrowserDialog dialog = new FolderBrowserDialog())
+                {
+                    dialog.Description = "사진을 저장할 폴더를 지정하세요.";
+                    dialog.ShowNewFolderButton = true;
+                    dialog.RootFolder = Environment.SpecialFolder.MyComputer;
+                    if (dialog.ShowDialog() == DialogResult.OK)
+                    {
+                        saveDirectory = dialog.SelectedPath;
+                    }
+                }
+            }
 
-                // 종료하기 전에 잊지말고 설정 저장하기
-                using (System.IO.Stream WriteStream = new FileStream("AzImageSave.dat", FileMode.Create))
+            {
+                // 설정 저장
+                using (System.IO.Stream WriteStream = new FileStream((args.Length > 0) ? "Scripts/SaveImage.js.Private/AzImageSave.dat" : "AzImageSave.dat", FileMode.Create))
                 {
                     var Writer = new StreamWriter(WriteStream);
+                    Writer.WriteLine(saveDirectory);
                     Writer.WriteLine(savefile.InitialDirectory);
                     Writer.Close();
                 }
             }
+
+
+
         }
 
         public static Image GetImageFromUrl(string url)

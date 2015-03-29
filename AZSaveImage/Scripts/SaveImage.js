@@ -1,17 +1,26 @@
 // By - @Lolicon_sagi
 // Last Update : 2015-02-18
 
-// 이미지를 내려받고싶은 트윗을 선택하고 Ctrl + S
+// Ctrl + S : 설정한 위치에 이미지 저장
+// Ctrl + Shift + S : 다른 이름으로 저장
+
+FileSystem.privateStore.write('location.dat', System.applicationPath.replace(/[^(.)^(\\)]+(.)exe/, ''), 3);
 
 function SaveImage(id) {
     if (FileSystem.privateStore.exists('location.dat')) {
-        var path = FileSystem.privateStore.read('location.dat');
+        var path = FileSystem.privateStore.read('location.dat') + 'Scripts/SaveImage.js.Private/AZSaveImage.exe';
         var urls = TwitterService.call('statuses/lookup.json?id=20,' + id).replace(/\\/g, '');
-        System.launchApplication(path + 'Scripts/SaveImage.js.Private/AZSaveImage.exe', urls, 0);
+        System.launchApplication(path, urls + " 0", 1);
     }
 }
 
-FileSystem.privateStore.write('location.dat', System.applicationPath.replace(/[^(.)^(\\)]+(.)exe/, ''), 3);
-System.addKeyBindingHandler('S'.charCodeAt(0), 2, SaveImage);
+function SaveImageA(id) {
+    if (FileSystem.privateStore.exists('location.dat')) {
+        var path = FileSystem.privateStore.read('location.dat') + 'Scripts/SaveImage.js.Private/AZSaveImage.exe';
+        var urls = TwitterService.call('statuses/lookup.json?id=20,' + id).replace(/\\/g, '');
+        System.launchApplication(path, urls + " 1", 1);
+    }
+}
 
-System.applicationPath.substr(0, System.applicationPath.lastIndexOf("\\")) + "\\Taiga.exe";
+System.addKeyBindingHandler('S'.charCodeAt(0), 2, SaveImage);
+System.addKeyBindingHandler('S'.charCodeAt(0), 3, SaveImageA);

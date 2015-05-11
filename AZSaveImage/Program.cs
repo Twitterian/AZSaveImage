@@ -28,12 +28,12 @@ namespace AZSaveImage
             // 빠른 저장시 사용할 저장 위치
             var saveDirectory = Environment.CurrentDirectory;
 
-            if (args.Length == 0 || (args.Length > 0 && Directory.Exists("Scripts/SaveImage.js.Private")))
+            if (args.Length == 0 || (args.Length > 0 && Directory.Exists("Scripts/AZSaveImage.js.Private")))
             {
                 // 설정을 읽어와요
                 try
                 {
-                    using (System.IO.Stream ReadStream = new FileStream((args.Length > 0) ? "Scripts/SaveImage.js.Private/AzImageSave.dat" : "AzImageSave.dat", FileMode.Open))
+                    using (System.IO.Stream ReadStream = new FileStream((args.Length > 0) ? "Scripts/AZSaveImage.js.Private/AzImageSave.dat" : "AzImageSave.dat", FileMode.Open))
                     {
                         var Reader = new StreamReader(ReadStream);
                         saveDirectory = Reader.ReadLine();
@@ -113,7 +113,7 @@ namespace AZSaveImage
 
             {
                 // 설정 저장
-                using (System.IO.Stream WriteStream = new FileStream((args.Length > 0) ? "Scripts/SaveImage.js.Private/AzImageSave.dat" : "AzImageSave.dat", FileMode.Create))
+                using (System.IO.Stream WriteStream = new FileStream((args.Length > 0) ? "Scripts/AZSaveImage.js.Private/AzImageSave.dat" : "AzImageSave.dat", FileMode.Create))
                 {
                     var Writer = new StreamWriter(WriteStream);
                     Writer.WriteLine(saveDirectory);

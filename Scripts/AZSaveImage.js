@@ -8,7 +8,7 @@ FileSystem.privateStore.write('location.dat', System.applicationPath.replace(/[^
 
 function SaveImage(id) {
     if (FileSystem.privateStore.exists('location.dat')) {
-        var path = FileSystem.privateStore.read('location.dat') + 'Scripts/SaveImage.js.Private/AZSaveImage.exe';
+        var path = FileSystem.privateStore.read('location.dat') + 'Scripts/AZSaveImage.js.Private/AZSaveImage.exe';
         var urls = TwitterService.call('statuses/lookup.json?id=20,' + id).replace(/\\/g, '');
         System.launchApplication(path, urls + " 0", 1);
     }
@@ -16,7 +16,7 @@ function SaveImage(id) {
 
 function SaveImageA(id) {
     if (FileSystem.privateStore.exists('location.dat')) {
-        var path = FileSystem.privateStore.read('location.dat') + 'Scripts/SaveImage.js.Private/AZSaveImage.exe';
+        var path = FileSystem.privateStore.read('location.dat') + 'Scripts/AZSaveImage.js.Private/AZSaveImage.exe';
         var urls = TwitterService.call('statuses/lookup.json?id=20,' + id).replace(/\\/g, '');
         System.launchApplication(path, urls + " 1", 1);
     }

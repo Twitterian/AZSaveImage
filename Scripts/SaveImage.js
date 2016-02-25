@@ -26,7 +26,7 @@ function SaveImageC(id) {
     if (FileSystem.privateStore.exists('location.dat')) {
         var path = FileSystem.privateStore.read('location.dat') + 'Scripts/SaveImage.js.Private/AZSaveImage.exe';
         var urls = TwitterService.call('statuses/lookup.json?id=20,' + id).replace(/\\/g, '');
-        var category = System.inputBox("이미지 카테고리 지정", "", false);
+        var category = System.inputBox("이미지 카테고리 지정", "", false).replace(/ /g, '_');
         System.launchApplication(path, urls + " 2 " + category, 1);
     }
 }

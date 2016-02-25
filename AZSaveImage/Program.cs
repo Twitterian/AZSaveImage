@@ -76,11 +76,10 @@ namespace AZSaveImage
 					// 카테고리 분류 후 저장
 					else if ( args[1] == "2" )
                     {
-
 						try
 						{
 							var path = string.Empty;
-							var category = args[2];
+							var category = args[2].Replace('_', ' ');
 							if ( string.IsNullOrEmpty( category ) )
 							{
 								path = saveDirectory;

@@ -27,7 +27,8 @@ namespace AZSaveImage
 				savefile.Title = "이미지 저장";
 				savefile.Filter = "이미지 파일|*.*";
 				
-				var saveDirectory = Environment.CurrentDirectory + "/Scripts/SaveImage.js.Private/SavedImages";
+				//var saveDirectory = Environment.CurrentDirectory + "/Scripts/SaveImage.js.Private/SavedImages";
+				var saveDirectory = File.ReadAllText(@"AZSaveImage.txt");
 				if ( !Directory.Exists( saveDirectory ) ) Directory.CreateDirectory( saveDirectory );
 
 				// 전달받은 트윗 객체에 미디어가 4개 미만이어도 항상 링크는 4개 돌려받습니다.
